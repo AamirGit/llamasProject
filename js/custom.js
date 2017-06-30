@@ -1,58 +1,47 @@
 // jquery for wiki app
 $(document).ready(function () {
 
-      $('#searchTerm').keypress(function (e) {
-            if (e.keyCode === 13) {
-              var searchTerm = $('#searchTerm').val(); // gets what is typed in search box
-              var url = 'https://en.wikipedia.org/w/api.php?action=opensearch&search=' + searchTerm +
-              '&format=json&callback=?';
-              //adds typed into url search string e.g. if you put "dog" in searchTerms place you would get reasults for dog7
-
-              console.log(url);
-
-              // next NEED TO USE AN AJAX CALL USING JQUERY
-              $.ajax({ //obj lateral
-                url: url,
-                type: 'GET',
-                async: false,
-                dataType: 'json',
-                success: function (data, status, jgXHR) {
-                  $('#outputSearch').html('');
-                  console.log(data);
-                  for (var i = 0; i < data[1].length; i++) {
-                    $('#outputSearch').prepend('<li><a href=" + data[3][i] + "><h2>' + data[1][i] + '</h2>' + '<p>' + data[2][i] + '</p></a></li>');
-
-                  }
-
-                },
-
-              });
-                                   }
+  $('#searchTerm').keypress(function (e) {
+    if (e.keyCode === 13) {
+      getResults();
+    }
   });
 
-    $("#search").on("click", function(){
-      var searchTerm = $("#searchTerm").val(); // gets what is typed in search box
-      var url = "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + searchTerm +"&format=json&callback=?"; // adds typed into url search string e.g. if you put "dog" in searchTerms place you would get reasults for dog
-  console.log(url);
+  $("#search").on("click", function () {
 
-  // next NEED TO USE AN AJAX CALL USING JQUERY
-  $.ajax({ //obj lateral
-        url: url,
-        type: 'GET',
-        async: false,
-        dataType: 'json',
-        success: function(data, status, jgXHR) {
-            $('#outputSearch').html('');
-            console.log(data);
-            for (var i = 0; i < data[1].length; i++) {
-              $('#outputSearch').prepend('<li><a href=' + data[3][i] + '><h2>' + data[1][i] + '</h2>' + '<p>' + data[2][i] + '</p></a></li>');
+    getResults();
+    
+  });
+
+});
+
+function getResults() {
+
+  // Get input from search box
+  const searchTerm = $('#searchTerm').val();
+
+  // Create URL from search term
+  const url = 'https://en.wikipedia.org/w/api.php?action=opensearch&search=' + searchTerm + '&format=json&callback=?';
+
+  // console.log(url);
+
+  $.ajax({
+    url: url,
+    type: 'GET',
+    async: false,
+    dataType: 'json',
+    success: function (data, status, jgXHR) {
+      $('#outputSearch').html('');
+
+      console.log(data);
+
+      // Need for loop to ouput the search term data
+      for (let i = 0; i < data[1].length; i++) {
+        $('#outputSearch').append('<li><a href=" + data[3][i] + "><h2>' + data[1][i] + '</h2>' + '<p>' + data[2][i] + '</p></a></li>');
       }
 
-    },
-  });
+      // fix prepend bug - use append
 
-  //need for loop to ouput the search term data
-  // fix prepend bug
-  });
-
- });
+    }
+  })
+}
